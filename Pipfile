@@ -1,0 +1,18 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+"bs4" = "*"
+"psycopg2" = "*"
+postgres = "*"
+requests = "*"
+arrow = "*"
+
+
+[dev-packages]
+
