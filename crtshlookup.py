@@ -6,9 +6,10 @@ import psycopg2
 import requests
 import arrow
 import csv
+import config as impossible
 
 #  list o' things to lookup
-list_of_lookup_keys = ['SOMESEARCHTERM_WILDCARD_IS_THE_PERCENT_SIGN_%']
+list_of_lookup_keys = impossible.list_of_lookup_keys
 
 job_start = arrow.utcnow()                                                                      #  grab a timestamp
 search_start =  arrow.utcnow().shift(days=-1).format('YYYY-MM-DD HH:mm:ss.SSS')                 #  start search 24 hrs ago
@@ -45,7 +46,7 @@ for lookup_key in list_of_lookup_keys:
                 "NAME_VALUE, " \
                 "ISSUER_NAME;"
 
-    #  connect to CRT.sh dB and fetch results
+    #  connect to CRT.sh dB and fetch results - ناممکن خواب دیکھنا
     try:
         conn = psycopg2.connect(dbname="certwatch", user="guest", host="crt.sh", port=5432)
         cur = conn.cursor()
@@ -82,10 +83,10 @@ print("These are the certs/domains that were returned: ", list_of_returned_certs
 
 #  log results to postgres for posterity
 new_certs = []
-pghost="SOME_INSTANCE_(URL_OR_IP)"
-pgdb="SOME_DB"
-pguser="SOME_USERNAME"
-pgpass="SOME_PASSWORD"
+pghost = impossible.my_pghost
+pgdb = impossible.my_pgdb
+pguser = impossible.my_pguser
+pgpass = impossible.my_pgpass
 #  You will need to create a table named "domains" with three columns: "domain", "crtsh_id", and "logged_at"
 sql = """INSERT INTO domains(domain, crtsh_id, logged_at) VALUES(%s,%s, %s)"""
 for cert in list_of_returned_certs:
@@ -113,12 +114,12 @@ def send_email_from_mailgun():
     auth_key = "SOME_API_KEY"
     files = {'attachment': open(csvname, 'rb')}
     return requests.post(
-        mailgun_url,
-        auth=("api", auth_key),
+        impossible.my_mailgun_url,
+        auth=("api", impossible.my_mailgun_auth_key),
         files=files,
-        data={"from": "Mailgun Sandbox <postmaster@YOUR_MAILGUN_INSTANCE.mailgun.org>",
-              "to": "adam@adamwasserman.net",  #  N.B. recipients are hard coded
-              "subject": "Today's crt.sh results",
+        data={"from": impossible.my_from,
+              "to": impossible.my_to,
+              "subject": impossible.my_subject,
               "text": mail_text})
 
 
